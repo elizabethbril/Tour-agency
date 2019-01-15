@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Interfaces
 {
-    public interface IRepository<T> : IDisposable
+    public interface IRepository<T>
     {
-        void Clear();
-        void Delete(int Id);
-        void Delete(T Entity);
-        void Add(T Entity);
-        void Modify(int Id, T NewItem);
+        void Delete(object id);
+        void Add(T item);
+        void Modify(object id, T newItem);
         T Get(int Id);
         T GetByPosition(int Position);
         List<T> GetAll();

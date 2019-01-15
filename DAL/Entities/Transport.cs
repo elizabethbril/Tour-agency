@@ -14,6 +14,6 @@ namespace DAL.Entities
         public DateTimeOffset DepartureTime { get; set; }
         public string ArrivalPoint { get; set; }
         public DateTimeOffset ArrivalTime { get; set; }
-        public virtual List<TransportPlace> TransportPlaces { get; set; }
+        public List<TransportPlace> TransportPlaces { get; set; }
     }
 }

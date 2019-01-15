@@ -10,6 +10,7 @@ namespace BLL.Interfaces
     public interface ITourLogic
     {
         void AddTour(TourDTO NewTour);
+        Task AddTourAsync(TourDTO NewTour);
         void EditTour(int Id, TourDTO Tour);
         IEnumerable<TourDTO> GetAllToursTemplates();
         TourDTO GetTour(int Id);

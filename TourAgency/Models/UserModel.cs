@@ -15,7 +15,7 @@ namespace TourAgency.Models
         public string Login { get; set; }
         public string Password { get; set; }
         public string TelephoneNumber { get; set; }
-        public virtual List<TourModel> Tours { get; set; }
-        public virtual List<TransportTicketModel> TransportTickets { get; set; }
+        public List<TourModel> Tours { get; set; }
+        public List<TransportTicketModel> TransportTickets { get; set; }
     }
 }

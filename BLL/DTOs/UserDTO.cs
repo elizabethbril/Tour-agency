@@ -18,7 +18,7 @@ namespace BLL.DTOs
             this.Login = Login;
             this.Password = Password;
         }
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
         public UserType UserType { get; set; }
@@ -26,7 +26,7 @@ namespace BLL.DTOs
         public string Login { get; set; }
         public string Password { get; set; }
         public string TelephoneNumber { get; set; }
-        public virtual List<TourDTO> Tours { get; set; }
-        public virtual List<TransportTicketDTO> TransportTickets { get; set; }
+        public List<TourDTO> Tours { get; set; }
+        public List<TransportTicketDTO> TransportTickets { get; set; }
     }
 }

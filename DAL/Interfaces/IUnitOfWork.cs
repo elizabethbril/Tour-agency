@@ -9,13 +9,19 @@ namespace DAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Tour> ToursTemplates { get; }
+        IRepository<Tour> Tours { get; }
         IRepository<Transport> Transports { get; }
-
         IRepository<User> Users { get; }
-        IRepository<Tour> OrderedTours { get; }
         IRepository<TransportPlace> TransportsPlace { get; }
 
-        void DeleteDB();
+        void SaveChanges();
+        Task SaveChangesAsync();
+        void SaveManagementChanges();
+        Task SaveManagementChangesAsync();
+
+        void RecreateDB();
+        Task RecreateDBAsync();
+        void RecreateManagement();
+
     }
 }

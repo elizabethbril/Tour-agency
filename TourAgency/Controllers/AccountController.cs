@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using BLL.Ninject;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -16,10 +17,12 @@ using Microsoft.Owin.Security.OAuth;
 using TourAgency.Models;
 using TourAgency.Providers;
 using TourAgency.Results;
+using BLL.Interfaces;
+using BLL.Logics;
 
 namespace TourAgency.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
@@ -318,6 +321,7 @@ namespace TourAgency.Controllers
             return logins;
         }
 
+
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
@@ -327,7 +331,12 @@ namespace TourAgency.Controllers
             {
                 return BadRequest(ModelState);
             }
+            using (var context = new ApplicationDbContext())
+            {
+                var roleStore = new RoleStore<IdentityRole>(context);
+                var roleManager = new RoleManager<IdentityRole>(roleStore);
 
+            }
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
@@ -337,54 +346,33 @@ namespace TourAgency.Controllers
                 return GetErrorResult(result);
             }
 
+            try
+            {
+                await UserManager.AddToRoleAsync(user.Id, model.Role);
+            }
+
+            catch (Exception ex)
+            {
+                await UserManager.DeleteAsync(user);
+                return BadRequest(ex.StackTrace);
+            }
+
+            try
+            {
+                var userAccountOperationsHandler = LogicDependencyResolver.ResolveUserAccountOperationsHandler();
+                await userAccountOperationsHandler.AddUserAsync(new BLL.DTOs.UserDTO { Email = model.Email, Name = model.Name, Surname = model.Surname, TelephoneNumber = model.TelephoneNumber });
+            }
+
+            catch (Exception ex)
+            {
+                await UserManager.DeleteAsync(user);
+                return BadRequest(ex.StackTrace);
+            }
+
             return Ok();
+
         }
        
-        //    using (var context = new ApplicationDbContext())
-        //    {
-        //        var roleStore = new RoleStore<IdentityRole>(context);
-        //        var roleManager = new RoleManager<IdentityRole>(roleStore);
-
-        //        if (roleManager.FindByName(model.Role) == null)
-        //        {
-        //            return BadRequest("Incorrect role");
-        //        }
-        //    }
-
-        //    var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-        //    IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-
-        //    if (!result.Succeeded)
-        //    {
-        //        return GetErrorResult(result);
-        //    }
-
-        //    try
-        //    {
-        //        await UserManager.AddToRoleAsync(user.Id, model.Role);
-        //    }
-
-        //    catch (Exception ex)
-        //    {
-        //        await UserManager.DeleteAsync(user);
-        //        return BadRequest(ex.StackTrace);
-        //    }
-
-        //    try
-        //    {
-        //        var userAccountOperationsHandler = LogicDependencyResolver.ResolveUserAccountOperationsHandler();
-        //        await userAccountOperationsHandler.AddUserAccountAsync(new BusinessLogicLayer.Models.UserAccountInfo { Email = model.Email, Name = model.Name, Surname = model.Surname, TelephoneNumber = model.TelephoneNumber });
-        //    }
-        //    catch (WrongModelException ex)
-        //    {
-        //        await UserManager.DeleteAsync(user);
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //    return Ok();
-        //}
-
         // POST api/Account/RegisterExternal
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]

@@ -9,7 +9,7 @@ namespace TourAgency.Models
     public class AddExternalLoginBindingModel
     {
         [Required]
-        [Display(Name = "Внешний маркер доступа")]
+        [Display(Name = "External access token")]
         public string ExternalAccessToken { get; set; }
     }
 
@@ -17,68 +17,87 @@ namespace TourAgency.Models
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Текущий пароль")]
+        [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Новый пароль")]
+        [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение нового пароля")]
-        [Compare("NewPassword", ErrorMessage = "Новый пароль и его подтверждение не совпадают.")]
+        [Display(Name = "Confirm new password")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 
     public class RegisterBindingModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
-        [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        [MaxLength(20)]
+        public string Name { get; set; }
+
+        [DataType(DataType.Text)]
+        [MaxLength(20)]
+        public string Surname { get; set; }
+
+        [Required]
+        [DataType(DataType.PhoneNumber)]
+        public string TelephoneNumber { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        [MaxLength(20)]
+        public string Role { get; set; }
     }
 
     public class RegisterExternalBindingModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
     }
 
     public class RemoveLoginBindingModel
     {
         [Required]
-        [Display(Name = "Поставщик входа")]
+        [Display(Name = "Login provider")]
         public string LoginProvider { get; set; }
 
         [Required]
-        [Display(Name = "Ключ поставщика")]
+        [Display(Name = "Provider key")]
         public string ProviderKey { get; set; }
     }
 
     public class SetPasswordBindingModel
     {
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Новый пароль")]
+        [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение нового пароля")]
-        [Compare("NewPassword", ErrorMessage = "Новый пароль и его подтверждение не совпадают.")]
+        [Display(Name = "Confirm new password")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 }

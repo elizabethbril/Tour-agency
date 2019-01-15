@@ -13,6 +13,6 @@ namespace TourAgency.Models
         public DateTimeOffset DepartureTime { get; set; }
         public string ArrivalPoint { get; set; }
         public DateTimeOffset ArrivalTime { get; set; }
-        public virtual List<TransportPlaceModel> TransportPlaces { get; set; }
+        public List<TransportPlaceModel> TransportPlaces { get; set; }
     }
 }

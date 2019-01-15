@@ -10,6 +10,7 @@ namespace BLL.Interfaces
     public interface IUserLogic
     {
         void AddUser(UserDTO NewUser);
+        Task AddUserAsync(UserDTO NewUser);
         IEnumerable<UserDTO> GetAllUsers();
         UserDTO GetUser(int Id);
         void DeleteUser(int Id);

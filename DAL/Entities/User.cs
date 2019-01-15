@@ -17,7 +17,7 @@ namespace DAL.Entities
         public string Login { get; set; }
         public string Password { get; set; }
         public string TelephoneNumber { get; set; }
-        public virtual List<Tour> Tours { get; set; }
-        public virtual List<TransportTicket> TransportTickets { get; set; }
+        public List<Tour> Tours { get; set; }
+        public List<TransportTicket> TransportTickets { get; set; }
     }
 }

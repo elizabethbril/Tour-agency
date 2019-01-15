@@ -1,4 +1,6 @@
-﻿using DAL.Interfaces;
+﻿using BLL.Interfaces;
+using BLL.Logics;
+using DAL.Interfaces;
 using DAL.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -12,14 +14,21 @@ namespace BLL.Ninject
     {
         static UnitOfWork UoW;
 
-        static LogicDependencyResolver()
+        public  static IUnitOfWork ResolveUnitOfWork()
         {
-            UoW = new UnitOfWork();
+            return new UnitOfWork("AgencyContext", "ManagementContext");
         }
 
-        public static IUnitOfWork ResolveUoW()
+
+        public static IUserLogic ResolveUserAccountOperationsHandler()
         {
-            return UoW;
+            return new UserLogic (ResolveUnitOfWork(), ResolveTourOperationsHandler());
         }
+
+        public static ITourLogic ResolveTourOperationsHandler()
+        {
+            return new TourLogic(ResolveUnitOfWork(), ResolveUserAccountOperationsHandler());
+        }
+
     }
 }

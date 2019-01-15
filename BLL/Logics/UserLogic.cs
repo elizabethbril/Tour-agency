@@ -22,8 +22,9 @@ namespace BLL.Logics
         }
 
         IUnitOfWork UoW;
+        ITourLogic tourOperationsHandler;
 
-        public UserLogic(IUnitOfWork UoW)
+        public UserLogic(IUnitOfWork UoW, ITourLogic tourOperationsHandler)
         {
             UserLogicMapper = new MapperConfiguration(cfg =>
             {
@@ -37,6 +38,7 @@ namespace BLL.Logics
                 cfg.CreateMap<Tour, TourDTO>();
             }).CreateMapper();
             this.UoW = UoW;
+            this.tourOperationsHandler = tourOperationsHandler;
         }
 
         IMapper UserLogicMapper;
@@ -55,20 +57,27 @@ namespace BLL.Logics
                 cfg.CreateMap<TourDTO, Tour>();
                 cfg.CreateMap<Tour, TourDTO>();
             }).CreateMapper();
-            UoW = LogicDependencyResolver.ResolveUoW();
+            UoW = LogicDependencyResolver.ResolveUnitOfWork();
         }
 
         public void AddUser(UserDTO NewUser)
         {
             if (UoW.Users.GetAll(u => u.Login == NewUser.Login).Count() != 0)
                 throw new InvalidLoginPasswordCombinationException("Entered login is already taken");
-            UoW.Users.Add(UserLogicMapper.Map<UserDTO, User>(NewUser));
+            UoW.Users.Add(UserLogicMapper.Map<User>(NewUser));
+        }
+
+
+        public async Task AddUserAsync(UserDTO NewUser)
+        {
+            
+            UoW.Users.Add(UserLogicMapper.Map<User>(NewUser));
+            await UoW.SaveChangesAsync();
         }
 
         public IEnumerable<UserDTO> GetAllUsers()
         {
-            UoW.DeleteDB();
-            return UserLogicMapper.Map<IEnumerable<User>, List<UserDTO>>(UoW.Users.GetAll(u => u.Tours));
+           return UserLogicMapper.Map<IEnumerable<User>, List<UserDTO>>(UoW.Users.GetAll(u => u.Tours));
         }
 
         public UserDTO GetUser(int Id)
@@ -104,7 +113,7 @@ namespace BLL.Logics
         {
             if (CurrentUser == null)
                 throw new WrongUserException("Login to reserve tour");
-            Tour tour = UoW.ToursTemplates.Get(TourId);
+            Tour tour = UoW.Tours.Get(TourId);
             User user = UoW.Users.GetAll(u => u.Id == UserId, u => u.Tours).FirstOrDefault();
             user.Tours.Add(tour);
             UoW.Users.Modify(user.Id, user);
@@ -127,5 +136,7 @@ namespace BLL.Logics
                 UoW.Users.Modify(user.Id, user);
             }
         }
+
+
     }
 }

@@ -14,7 +14,7 @@ namespace BLL.DTOs
         public DateTimeOffset DepartureTime { get; set; }
         public string ArrivalPoint { get; set; }
         public DateTimeOffset ArrivalTime { get; set; }
-        public virtual List<TransportPlaceDTO> TransportPlaces { get; set; }
+        public List<TransportPlaceDTO> TransportPlaces { get; set; }
 
         public TransportDTO() { }
         public TransportDTO(string Type, string DeparturePoint, DateTimeOffset DepartureTime, string ArrivalPoint, DateTimeOffset ArrivalTime)

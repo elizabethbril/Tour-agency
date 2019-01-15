@@ -18,14 +18,8 @@ namespace DAL.Repositories
             this.Context = Context;
             DbSet = Context.Set<T>();
         }
-
-        public void Clear()
-        {
-            DbSet.RemoveRange(DbSet);
-            Context.SaveChanges();
-
-        }
-        public void Delete(int Id)
+        
+        public void Delete(object Id)
         {
             DbSet.Remove(DbSet.Find(Id));
             Context.SaveChanges();
@@ -35,15 +29,14 @@ namespace DAL.Repositories
             Context.Entry(Item).State = EntityState.Deleted;
             Context.SaveChanges();
         }
-        public void Add(T Item)
+        public void Add(T item)
         {
-            DbSet.Add(Item);
-            Context.SaveChanges();
+            DbSet.Add(item);
         }
-        public void Modify(int Id, T Item)
+        public void Modify(object id, T newItem)
         {
-            Context.Entry(Context.Set<T>().Find(Id)).CurrentValues.SetValues(Item);
-            Context.SaveChanges();
+            Context.Entry(DbSet.Find(id)).CurrentValues.SetValues(newItem);
+            Context.Entry(DbSet.Find(id)).State = EntityState.Modified;
         }
         public T Get(int Id)
         {

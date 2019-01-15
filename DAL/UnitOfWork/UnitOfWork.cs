@@ -15,31 +15,22 @@ namespace DAL.UnitOfWork
         private ManagementContext ManagementContext;
         private AgencyContext AgencyContext;
 
-        public UnitOfWork()
+        public UnitOfWork(string managementContextConnectionString, string agencyContextConnectionString)
         {
-            ManagementContext = new ManagementContext();
-            AgencyContext = new AgencyContext();
-        }
-
-        public UnitOfWork(ManagementContext ManagementContext, AgencyContext AgencyContext)
-        {
-            this.ManagementContext = ManagementContext;
-            this.AgencyContext = AgencyContext;
+            ManagementContext = new ManagementContext(managementContextConnectionString);
+            AgencyContext = new AgencyContext(agencyContextConnectionString);
         }
 
 
-        private IRepository<Tour> _tourstemplates;
+        private IRepository<Tour> _tours;
         private IRepository<Transport> _transports;
 
         private IRepository<TransportPlace> _transportsplases;
         private IRepository<User> _users;
-        private IRepository<Tour> _orderedtours;
 
-        public IRepository<Tour> ToursTemplates { get { if (_tourstemplates == null) _tourstemplates = new GenericRepository<Tour>(ManagementContext); return _tourstemplates; } }
+        public IRepository<Tour> Tours { get { if (_tours == null) _tours = new GenericRepository<Tour>(ManagementContext); return _tours; } }
         public IRepository<Transport> Transports { get { if (_transports == null) _transports = new GenericRepository<Transport>(ManagementContext); return _transports; } }
-
         public IRepository<User> Users { get { if (_users == null) _users = new GenericRepository<User>(AgencyContext); return _users; } }
-        public IRepository<Tour> OrderedTours { get { if (_orderedtours == null) _orderedtours = new GenericRepository<Tour>(AgencyContext); return _orderedtours; } }
         public IRepository<TransportPlace> TransportsPlace { get { if (_transportsplases == null) _transportsplases = new GenericRepository<TransportPlace>(AgencyContext); return _transportsplases; } }
 
         public void DeleteDB()
@@ -49,18 +40,63 @@ namespace DAL.UnitOfWork
 
         }
 
+        public void RecreateDB()
+        {
+            AgencyContext.Database.Delete();
+            AgencyContext.Database.Create();
+        }
+
+        public async Task RecreateDBAsync()
+        {
+            await new Task(() => AgencyContext.Database.Delete());
+            await new Task(() => AgencyContext.Database.Create());
+        }
+
+        public void RecreateManagement()
+        {
+            ManagementContext.Database.Delete();
+            ManagementContext.Database.Create();
+        }
+
+        public void SaveChanges()
+        {
+            lock (AgencyContext)
+            {
+                AgencyContext.SaveChanges();
+            }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await AgencyContext.SaveChangesAsync();
+        }
+
+        public void SaveManagementChanges()
+        {
+            lock (ManagementContext)
+            {
+                ManagementContext.SaveChanges();
+            }
+        }
+
+        public async Task SaveManagementChangesAsync()
+        {
+            await ManagementContext.SaveChangesAsync();
+        }
+
         private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
+                    AgencyContext.Dispose();
                     ManagementContext.Dispose();
                 }
             }
-            this.disposed = true;
+            disposed = true;
         }
 
         public void Dispose()
@@ -68,5 +104,6 @@ namespace DAL.UnitOfWork
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
     }
 }

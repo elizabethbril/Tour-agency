@@ -41,7 +41,7 @@ namespace BLL.Logics
                 cfg.CreateMap<Transport, TransportDTO>();
                 cfg.CreateMap<TransportPlace, TransportPlaceDTO>();
             }).CreateMapper();
-            UoW = LogicDependencyResolver.ResolveUoW();
+            UoW = LogicDependencyResolver.ResolveUnitOfWork();
         }
 
         public void AddTransport(TransportDTO NewTransport, int AvailibleSeats, int PriceForTicket)
